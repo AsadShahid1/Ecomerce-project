@@ -35,7 +35,13 @@ class Product extends Model
     public function category(){
         return $this->belongsTo(related: Category::class);
     }
-    public function getColors(){
-        return json_decode($this->color , true);
+    public function wishlist(){
+        return $this->hasMany('App\Models\WishList');
+    }
+    public function cart(){
+        return $this->hasMany('App\Models\WishList');
+    }
+    public function order_details(){
+        return $this->hasMany('App\Models\OrderDetail');
     }
 }

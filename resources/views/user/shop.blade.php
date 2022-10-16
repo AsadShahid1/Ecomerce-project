@@ -19,9 +19,9 @@
                             </div><!-- End .toolbox-info -->
                         </div><!-- End .toolbox-left -->
                     </div><!-- End .toolbox -->
-
+                    <x-auth-session-status class="text-2xl mb-4" :status="session('message')"></x-auth-session-status>
                     <div class="products mb-3">
-                        <div class="row justify-content-center " id="result">
+                        <div class="row justify-content-center" id="result">
                                 @include('user.components.filtered-products')
                         </div><!-- End .row -->
                         {{ $products->links() }}
@@ -48,8 +48,6 @@
                         </ul>
                     </nav>
                 </div><!-- End .col-lg-9 -->
-                @include('user.components.filters')
-                @include('user.components.footer')
-                {{-- @php
-    dd($name);
-@endphp --}}
+@include('user.components.filters')
+@include('user.components.footer')
+            

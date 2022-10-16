@@ -51,17 +51,6 @@ $(document).ready(function () {
             }
 
 
-        } else if ($(this).data('type') == 'price') {
-
-            if ($(this).is(":checked")) {
-                prices.push(val);
-            } else {
-                const index = prices.indexOf(val);
-                if (index > -1) {
-                    prices.splice(index, 1);
-                }
-            }
-
         }
         $.ajax({
             type: "GET",
@@ -71,11 +60,11 @@ $(document).ready(function () {
                 "brands": brands,
             },
             success: function (data) {
-                $("#result").load(data.products);
+                $("#result").html(data);
             },
-            error : function(data) {   
-              alert('error') ;
-               } 
+            error: function (data) {
+                alert('error');
+            }
         });
 
         // if ($(this).is(":checked")) {
@@ -83,20 +72,128 @@ $(document).ready(function () {
         // } else if{
         //     // $("#result").load("http://127.0.0.1:8001/");
         // }
-       
+
         // console.log(prices);
     });
 
 
     // Add active class to the current button (highlight it)
-        // var header = document.getElementById("myDIV");
-        // var btns = header.getElementsByClassName("btn");
-        // for (var i = 0; i < btns.length; i++) {
-        //     btns[i].addEventListener("click", function () {
-        //         var current = document.getElementsByClassName("active");
-        //         current[0].className = current[0].className.replace(" active", "");
-        //         this.className += " active";
-        //     });
-        // }
+    // var header = document.getElementById("myDIV");
+    // var btns = header.getElementsByClassName("btn");
+    // for (var i = 0; i < btns.length; i++) {
+    //     btns[i].addEventListener("click", function () {
+    //         var current = document.getElementsByClassName("active");
+    //         current[0].className = current[0].className.replace(" active", "");
+    //         this.className += " active";
+    //     });
+    // }
+
+
+    // Add wishlist
+    $(document).on("click", '.add-wishlist', function () {
+        var route = $(this).data('route');
+        $.get(route, function (response) {
+            if (response == 1) {
+                swal({
+                    icon: "success",
+                    title: "Success!",
+                    text: "Product added in wishlist!",
+                    type: "success",
+                    timer: 2000,
+                    });
+                    
+            }else{
+                swal({
+                    icon: "deleted",
+                    title: "ooops!",
+                    text: "something went wrong!",
+                    type: "error",
+                    timer: 2000
+                    }); 
+            }
+        })
+
+    })
+
+    // Remove Wishlist
+    $(document).on('click' , '.wishremove' , function(){
+        item = $(this).data('item');
+        $.get($(this).data('route') , function(res){
+            $("#"+item).remove();
+            setTimeout(function(){
+                window.location.reload(true);
+            },1000);
+        })
+    })
+
+    // Add in cart
+    $(document).on("click", '.add-to-cart', function () {
+        var route = $(this).data('route');
+        if($('.squantity').length){
+            var quant = $(".squantity").val();
+            route += "/"+quant;
+        }
+        $.get(route, function (response) {
+            $(".cart-count").html(response.count);
+            if (response.success) {
+                swal({
+                    icon: "success",
+                    title: "Success!",
+                    text: "Product added in cart!",
+                    type: "success",
+                    timer: 2000,
+                    });
+                    
+            }else{
+                swal({
+                    icon: "error",
+                    title: "Error",
+                    text: "Product Already Added",
+                    type: "error",
+                    timer: 2000,
+                    });
+            }
+        })
+
+    })
+
+    //remove from cart
+    $(document).on('click' , '.remove-product' , function(){
+        $("#"+$(this).data('remove')).remove();
+        setTimeout(function(){
+            window.location.reload(true);
+        },1000);
+        $.get($(this).data('route') , function(res){
+            if (response.success) {
+                swal({
+                    icon: "success",
+                    title: "Success!",
+                    text: "Product remove from cart!",
+                    type: "success",
+                    timer: 2000,
+                    });
+                    
+            }else{
+                swal({
+                    icon: "error",
+                    title: "Error",
+                    text: "Something went wrong",
+                    type: "error",
+                    timer: 2000,
+                    });
+            }
+        })
+    })
+
+    // Change Quantity
+
+    $(document).on('change' , '.quantity' , function(){
+        var quantity = $(this).val();
+        console.log(quantity);
+        var url = $(this).data('route')+"/"+quantity;
+        $.get(url , function(res){
+            $('.total_price').html(res.totalPrice);
+        })
+    })
 });
 

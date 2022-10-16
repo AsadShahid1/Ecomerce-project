@@ -511,12 +511,83 @@
       <script src="{{asset('assets/js/jquery.countdown.min.js')}}"></script>
       
      <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 
       <!-- Main JS File -->
       <script src="{{asset('assets/js/main.js')}}"></script>
       <script src="{{asset('assets/js/demos/demo-13.js')}}"></script>
       <script src="{{asset('assets/js/user.js')}}"></script>
+      @yield("script")
+      <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        var style = {
+            base: {
+                color: '#32325d',
+                lineHeight: '20px',
+                height: '43px',
+                border : '2px solid red',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: 'red'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        };
+        const stripe = Stripe('{{env('STRIPE_KEY')}}' , { locale: 'en' }); // Create a Stripe client.
+        const elements = stripe.elements(); // Create an instance of Elements.
+        const card = elements.create('card', { style: style }); // Create an instance of the card Element.
 
+        card.mount('#card-element'); // Add an instance of the card Element into the `card-element` <div>.
+
+        card.on('change', function(event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        // Handle form submission.City
+        var form = document.getElementById('payment-form');
+
+
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                    // Inform the user if there was an error.
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    stripeTokenHandler(result.token);
+                }
+            });
+        });
+
+        // Submit the form with the token ID.
+        function stripeTokenHandler(token) {
+            // Insert the token ID into the form so it gets submitted to the server
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+
+            // Submit the form
+            form.submit();
+        }
+    </script>
   </body>
   
   

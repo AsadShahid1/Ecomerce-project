@@ -7,7 +7,10 @@ use App\Models\Category;
 use App\Models\Offer;
 use App\Models\User;
 use App\Models\Product;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session as FacadesSession;
+use Symfony\Component\HttpFoundation\Session\Session as SessionSession;
 
 class HomeController extends Controller
 {
@@ -21,6 +24,14 @@ class HomeController extends Controller
 
   public function index()
   {
+    // cart detail
+    $cart = Session::has('cart') ? Session::get('cart') : [];
+    $ids = [];
+    foreach ($cart as $value) {
+      $ids[] = $value['product_id'];
+    }
+    $data['products_cart'] = Product::whereIn('id', $ids)->get();
+
     $data['products'] = Product::with('category')->get();
     $data['brands'] = Brand::get();
     $data['categories'] = Category::get();
@@ -29,6 +40,14 @@ class HomeController extends Controller
   }
   public function shop(Request $request)
   {
+    // cart detail
+    $cart = Session::has('cart') ? Session::get('cart') : [];
+    $ids = [];
+    foreach ($cart as $value) {
+      $ids[] = $value['product_id'];
+    }
+    $data['products_cart'] = Product::whereIn('id', $ids)->get();
+
     $data['products'] = Product::with('category')->Paginate('6');
     $data['brands'] = Brand::get();
     // $data['categories'] = Category::get();
@@ -44,28 +63,25 @@ class HomeController extends Controller
     return view('user.shop', $data);
   }
 
-  
-public function filter(Request $request)
-{
-  $cats = null;
-  $brands = null;
-  if(isset($request->cats)){
+
+  public function filter(Request $request)
+  {
+    $cats = null;
+    $brands = null;
+    if (isset($request->cats)) {
       $cats = $request->cats;
-  }    
-  if(isset($request->brands)){
+    }
+    if (isset($request->brands)) {
       $brands = $request->brands;
-  }
-  $products = Product::when($cats, function ($query, $cats) {
+    }
+    $products = Product::when($cats, function ($query) use ($cats) {
       return $query->whereIn('category_id', $cats);
-  })->when($brands, function ($query, $brands) {
+    })->when($brands, function ($query) use ($brands) {
       return $query->whereIn('brand_id', $brands);
-  });
+    })->get();
 
-
-  return response()->json(array("products" => $products),200);
-  // return view('user.shop')->with('products' , $products);
-
-}
-
-
+    return view('user.components.filtered-products')->with('products', $products);
+  }
+ 
+  
 }

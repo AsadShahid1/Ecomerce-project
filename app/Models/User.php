@@ -45,6 +45,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
+    public function wishlist(){
+        return $this->hasMany('App\Models\WishList')->latest();
+    }
+    public function cart(){
+        return $this->hasMany('App\Models\WishList')->latest();
+    }
     
 }

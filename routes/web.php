@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\WishListController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -59,6 +61,17 @@ Route::group(['name'=>'user.','middleware'=>['auth','verified']],function(){
     // Featured routes
     Route::get('/',[HomeController::class, 'index']);
     Route::get('/shop',[HomeController::class, 'shop'])->name('shop');
+    Route::get('/view-cart' , [CartController::class , 'index'])->name('user.view-cart');
+    Route::get('wishlist' , [WishListController::class , 'index'])->name('user.wishlist');
+    Route::get('/checkout' , [CartController::class , 'checkout'])->name('user.checkout');
+    Route::post('/place-order' , [CartController::class , 'saveOrder'])->name('saveorder');
+    Route::get('add-cart/{id}/{quantity?}' , [CartController::class , 'add'])->name('add-cart');
+    Route::get('change/{id}/{quantity?}', [CartController::class , 'ChangeQty'])->name('cart.quantity');
+    Route::get('remove/{id}', [CartController::class , 'remove'])->name('product.remove');
+    Route::get('add-wishlist/{id}' , [WishListController::class , 'create'])->name('add-wishlist');
+    Route::get('wishlist/remove/{id}' , [WishlistController::class , 'remove'])->name('wishlist.remove');
+
+
 });
 
 Route::get('/search',[HomeController::class , 'search'])->name('search');
