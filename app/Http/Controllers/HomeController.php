@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Offer;
+use App\Models\Order;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\Wishlist;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session as FacadesSession;
@@ -20,6 +22,21 @@ class HomeController extends Controller
     $data['total_products'] = Product::count();
     $data['total_offers'] = Offer::count();
     return view('admin.dashboard', $data);
+  }
+  public function user_dashboard()
+  {
+    return view('user.dashboard');
+  }
+  
+  public function order()
+  {
+    $data['orders'] =  Order::get();
+    return view('user.userorder',$data);
+  }
+  public function wishlist()
+  {
+    $data['wishlists'] =  Wishlist::get();
+    return view('user.userwish',$data);
   }
 
   public function index()

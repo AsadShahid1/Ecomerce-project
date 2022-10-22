@@ -61,9 +61,14 @@ Route::group(['name'=>'user.','middleware'=>['auth','verified']],function(){
     // Featured routes
     Route::get('/',[HomeController::class, 'index']);
     Route::get('/shop',[HomeController::class, 'shop'])->name('shop');
+    Route::get('/dashboard',[HomeController::class, 'user_dashboard'])->name('dashboard');
+    Route::get('/orders',[HomeController::class, 'order'])->name('order');
+    Route::get('/userwishlist',[HomeController::class, 'wishlist'])->name('userwishlist');
     Route::get('/view-cart' , [CartController::class , 'index'])->name('user.view-cart');
     Route::get('wishlist' , [WishListController::class , 'index'])->name('user.wishlist');
     Route::get('/checkout' , [CartController::class , 'checkout'])->name('user.checkout');
+    // Route::get('/thankyou' , [CartController::class , 'thankyou'])->name('user.thankyou');
+    Route::get('/cancel' , [CartController::class , 'cancel'])->name('user.cancel');
     Route::post('/place-order' , [CartController::class , 'saveOrder'])->name('saveorder');
     Route::get('add-cart/{id}/{quantity?}' , [CartController::class , 'add'])->name('add-cart');
     Route::get('change/{id}/{quantity?}', [CartController::class , 'ChangeQty'])->name('cart.quantity');
@@ -74,6 +79,7 @@ Route::group(['name'=>'user.','middleware'=>['auth','verified']],function(){
 
 });
 
+Route::get('/thankyou' , [CartController::class , 'thankyou'])->name('user.thankyou');
 Route::get('/search',[HomeController::class , 'search'])->name('search');
 Route::get('/filter',[HomeController::class , 'filter'])->name('filter');
 

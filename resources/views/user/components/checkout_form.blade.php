@@ -47,6 +47,5 @@
 
         <label for="notes">Order notes (optional)</label>
         <textarea class="form-control" cols="30" rows="4" name="notes" id="notes" placeholder="Notes about your order, e.g. special notes for delivery"></textarea>
-        <div id="card-element"></div>
 
 </div><!-- End .col-lg-9 -->

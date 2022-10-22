@@ -103,7 +103,7 @@
                             <label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
                         </form>
                     </div><!-- End .checkout-discount -->
-                    <form action="{{route('saveorder') }}" method="POST" id="payment-form">
+                    <form action="{{route('saveorder') }}" method="POST" id="">
                         @csrf
 
                         <div class="row">
@@ -141,11 +141,11 @@
                                     </table><!-- End .table table-summary -->
 
                                     <div class="accordion-summary" id="accordion-payment">
-                                   
+                                        <input type="hidden"  name="payment_method" id="payment_method">
                                         <div class="card">
                                             <div class="card-header" id="heading-4">
                                                 <h2 class="card-title">
-                                                    <a class="collapsed" value="paypal" name="payment_method" role="button" data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
+                                                    <a class="collapsed check_payment_method" data-value="paypal"  role="button" data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
                                                         PayPal 
                                                     </a>
                                                 </h2>
@@ -160,23 +160,18 @@
                                         <div class="card">
                                             <div class="card-header" id="heading-5">
                                                 <h2 class="card-title">
-                                                    <a class="collapsed" role="button" value="stripe" name="payment_method" data-toggle="collapse" href="#collapse-5" aria-expanded="false" aria-controls="collapse-5">
+                                                    <a class="collapsed check_payment_method" data-value="stripe" role="button" value="stripe" data-toggle="collapse" href="#collapse-5" aria-expanded="false" aria-controls="collapse-5">
                                                         Credit Card (Stripe)
+
                                                         <img src="assets/images/payments-summary.png" alt="payments cards">
                                                     </a>
-                                                    <div class="form-group">
-                                                        <input id="stripe" checked type="radio" class="form-check-input payment" value="stripe"
-                                                            name="payment_method">
-                                                        <label for="stripe" class="form-option-label">
-                                                            <span class="form-option">Stripe</span>
-                                                        </label>
-                                                    </div>
-                                                    
                                                 </h2>
                                             </div><!-- End .card-header -->
                                             <div id="collapse-5" class="collapse" aria-labelledby="heading-5" data-parent="#accordion-payment">
-                                                <div class="card-body"> 
-                                                </div><!-- End .card-body -->
+                                                <div id="card-element"></div>
+                                                {{-- <div class="card-body"> 
+
+                                                </div><!-- End .card-body --> --}}
                                             </div><!-- End .collapse -->
                                         </div><!-- End .card -->
                                     </div><!-- End .accordion -->
@@ -194,11 +189,22 @@
     </main><!-- End .main -->
 
 @include('user.components.footer')
-
 @section('script')
     <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
     <script src="https://js.stripe.com/v3/"></script>
+ 
     <script>
+      $(document).on("click" , '.check_payment_method' , function(){
+        console.log("jsdfk");
+        val = $(this).data('value');
+        $("#payment_method").val(val);
+        if(val == "stripe"){
+            $("form").attr("id" , "payment-form");
+            addingEventListener(); 
+        }else{
+            $("form").attr("id" , "");
+        }
+    })
         var style = {
             base: {
                 color: '#32325d',
@@ -217,6 +223,8 @@
                 iconColor: '#fa755a'
             }
         };
+      
+
         const stripe = Stripe('{{env('STRIPE_KEY')}}' , { locale: 'en' }); // Create a Stripe client.
         const elements = stripe.elements(); // Create an instance of Elements.
         const card = elements.create('card', { style: style }); // Create an instance of the card Element.
@@ -233,24 +241,22 @@
         });
 
         // Handle form submission.City
-        var form = document.getElementById('payment-form');
+        function addingEventListener(){
+            var form = document.getElementById('payment-form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
 
-
-        var form = document.getElementById('payment-form');
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            stripe.createToken(card).then(function(result) {
-                if (result.error) {
-                    // Inform the user if there was an error.
-                    var errorElement = document.getElementById('card-errors');
-                    errorElement.textContent = result.error.message;
-                } else {
-                    stripeTokenHandler(result.token);
-                }
+                stripe.createToken(card).then(function(result) {
+                    if (result.error) {
+                        // Inform the user if there was an error.
+                        var errorElement = document.getElementById('card-errors');
+                        errorElement.textContent = result.error.message;
+                    } else {
+                        stripeTokenHandler(result.token);
+                    }
+                });
             });
-        });
-
+        }
         // Submit the form with the token ID.
         function stripeTokenHandler(token) {
             // Insert the token ID into the form so it gets submitted to the server

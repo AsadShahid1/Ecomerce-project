@@ -69,18 +69,16 @@ $(document).ready(function () {
 
   })
 
-  // search category
-
-  $("#rangePrimary").ionRangeSlider({
-    type: "double",
-    grid: true,
-    min: 0,
-    max: 1000,
-    from: 200,
-    to: 800,
-    prefix: "£"
-});
-
+// Remove Wishlist
+$(document).on('click', '.wishremove', function() {
+    item = $(this).data('item');
+    $.get($(this).data('route'), function(res) {
+        $("#" + item).remove();
+        setTimeout(function() {
+            window.location.reload(true);
+        }, 1000);
+    })
+})
 
 });
 

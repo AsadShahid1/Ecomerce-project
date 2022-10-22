@@ -51,5 +51,8 @@ class User extends Authenticatable
     public function cart(){
         return $this->hasMany('App\Models\WishList')->latest();
     }
+    public function orders(){
+        return $this->hasMany('App\Models\Order' , 'order_by')->latest();
+    }
     
 }

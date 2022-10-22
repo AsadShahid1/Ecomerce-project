@@ -322,14 +322,14 @@
                                                 <div class="menu-title">Products</div><!-- End .menu-title -->
                                                 <ul>
                                                     @foreach ($products as $product)
-                                                    <li><a href="#">{{$product->name}}</a></li>
+                                                        <li><a href="#">{{ $product->name }}</a></li>
                                                     @endforeach
                                                 </ul>
 
                                                 <div class="menu-title">Categories</div><!-- End .menu-title -->
                                                 <ul>
                                                     @foreach ($categories as $category)
-                                                    <li><a href="#">{{$category->name}}</a></li>
+                                                        <li><a href="#">{{ $category->name }}</a></li>
                                                     @endforeach
                                                 </ul>
                                             </div><!-- End .col-md-6 -->
@@ -338,7 +338,7 @@
                                                 <div class="menu-title">Brands</div><!-- End .menu-title -->
                                                 <ul>
                                                     @foreach ($brands as $brand)
-                                                    <li><a href="#">{{$brand->name}}</a></li>
+                                                        <li><a href="#">{{ $brand->name }}</a></li>
                                                     @endforeach
                                                 </ul>
                                                 <div class="menu-title">Shop Pages</div><!-- End .menu-title -->
@@ -402,12 +402,14 @@
                         </div><!-- End .megamenu megamenu-sm -->
                     </li>
 
+
                 </ul><!-- End .menu -->
             </nav><!-- End .main-nav -->
         </div><!-- End .col-lg-9 -->
         <div class="header-right">
-            <i class="la la-lightbulb-o"></i>
-            <p>Clearance Up to 30% Off</span></p>
+            <button class="btn btn-primary"> 
+                <a href="{{route('dashboard')}}" class="btn active">Dashboard</a>
+            </button>
         </div>
     </div><!-- End .container -->
 </div><!-- End .header-bottom -->

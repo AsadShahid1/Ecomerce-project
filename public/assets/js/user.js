@@ -195,5 +195,18 @@ $(document).ready(function () {
             $('.total_price').html(res.totalPrice);
         })
     })
+
+    // payment method
+    $(document).on("click" , '.check_payment_method' , function(){
+        console.log("jsdfk");
+        val = $(this).data('value');
+        $("#payment_method").val(val);
+        if(val == "stripe"){
+            $("form").attr("id" , "payment-form");
+            addingEventListener(); 
+        }else{
+            $("form").attr("id" , "");
+        }
+    })
 });
 
